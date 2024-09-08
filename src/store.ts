@@ -19,5 +19,4 @@ export const usePatientStore = create<PatientState>((set) => ({
             patients: [...state.patients, newPatient]
         }))
     }
-
 }))
