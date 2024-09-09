@@ -16,7 +16,7 @@ export default function PatientsList() {
               patients and appointments
             </span>
           </p>
-          <div className="md:h-screen overflow-y-scroll">
+          <div className="md:h-screen overflow-y-scroll flex flex-col gap-5">
             {patients.map((patient) => (
               <PatientDetail key={patient.id} patient={patient} />
             ))}

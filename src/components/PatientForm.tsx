@@ -2,18 +2,38 @@ import { useForm } from 'react-hook-form'
 import Error from './Error'
 import { DraftPatient } from '../types'
 import { usePatientStore } from '../store'
+import { useEffect } from 'react'
 
 export default function PatientForm() {
+    const patients = usePatientStore(state => state.patients)
     const addPatient = usePatientStore(state => state.addPatient)
+    const updatePatient = usePatientStore(state => state.updatePatient)
+    const activeId = usePatientStore(state => state.activeId)
 
-    const { register, handleSubmit, formState: {errors} } = useForm<DraftPatient>()
+    const { register, handleSubmit, formState: {errors}, reset, setValue } = useForm<DraftPatient>()
+    
+    useEffect(() => {
+        if(activeId) {
+            const activePatient = patients.filter( patient => patient.id === activeId)[0]
+            setValue('name', activePatient.name)
+            setValue('email', activePatient.email)
+            setValue('caretaker', activePatient.caretaker)
+            setValue('date', activePatient.date)
+            setValue('symptoms', activePatient.symptoms)
+        }
+    }, [activeId])
 
     const registerPatient = (data: DraftPatient) => {
-        addPatient(data)
+        if(activeId) {
+            updatePatient(data)
+        } else {
+            addPatient(data)
+        }
+        reset()
     }
   
     return (
-      <div className="md:w-1/2 lg:w-2/5 mx-5">
+      <div className={`md:w-1/2 lg:w-2/5 mx-5 `}>
         <h2 className="font-black text-3xl text-center">
           Patient Manager
         </h2>
@@ -24,7 +44,7 @@ export default function PatientForm() {
         </p>
 
         <form
-          className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
+          className={`bg-white shadow-md rounded-lg py-10 px-5 mb-10 border transition duration-500 ${activeId ? 'border-yellow-500' : 'border-transparent' } `}
           noValidate
           onSubmit={handleSubmit(registerPatient)}
         >
@@ -135,7 +155,7 @@ export default function PatientForm() {
 
           <input
             type="submit"
-            className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
+            className={` w-full p-3 text-white uppercase font-bold  cursor-pointer transition-colors ${activeId ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-indigo-600 hover:bg-indigo-700'}`}
             value="Guardar Paciente"
           />
         </form>
