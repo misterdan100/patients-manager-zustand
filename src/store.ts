@@ -2,6 +2,7 @@ import  { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import { DraftPatient, Patient } from './types'
+import { toast } from 'react-toastify'
 
 type PatientState = {
     patients: Patient[]
@@ -31,6 +32,7 @@ export const usePatientStore = create<PatientState>()(devtools((set) => ({
         set((state) => ({
             patients: state.patients.filter( patient => patient.id !== id)
         }))
+        toast.warning('Patient deleted.')
     },
     getPatientById: (id) => {
         set(() => ({
